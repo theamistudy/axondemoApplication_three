@@ -28,8 +28,8 @@ public class MoneyTransferSagaTest {
     @Test
     public void testDepositMoneyAfterWithdrawal() throws Exception{
 
-        fixture.givenAPublished(new MoneyTransferRequestedEvent("tf1","acc1","acc2",100))
-                .whenPublishingA(new MoneyWithdrawnEvent("acct1","tf1",500, 100))
+        fixture.givenAPublished(new MoneyTransferRequestedEvent("tf1","acct1","acct2",100))
+                .whenPublishingA(new MoneyWithdrawnEvent("acct1","tf1",100, 100))
                 .expectDispatchedCommands(new DepositMoneyCommand("acct2","tf1", 100));
 
     }

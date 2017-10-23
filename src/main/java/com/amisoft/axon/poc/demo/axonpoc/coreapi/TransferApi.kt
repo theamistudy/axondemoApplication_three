@@ -3,6 +3,9 @@ package com.amisoft.axon.poc.demo.axonpoc.coreapi
 import org.axonframework.commandhandling.TargetAggregateIdentifier
 import org.axonframework.commandhandling.model.AggregateIdentifier
 
+
+
+
 class RequestMoneyTransferCommand(@AggregateIdentifier val transferId : String, val sourceAccount : String, val targetAccount : String, val amount : Int);
 
 class MoneyTransferRequestedEvent( val transferId : String,val sourceAccount : String, val targetAccount : String, val amount : Int);
