@@ -27,7 +27,6 @@ public class MoneyTransferSaga {
     private transient CommandGateway commandGateway;
 
     private String targetAccount;
-    private String transactionId;
     private String transferId;
 
 
@@ -36,32 +35,21 @@ public class MoneyTransferSaga {
     public void on(MoneyTransferRequestedEvent event){
 
         targetAccount = event.getTargetAccount();
-        transactionId = UUID.randomUUID().toString();
         transferId = event.getTransferId();
-        SagaLifecycle.associateWith("transactionId",transactionId);
+        SagaLifecycle.associateWith("transactionId",transferId);
 
-        // Oneway of handle overdraft limit exceed exception. Just uncomment the below code.
-        /*try {
-            commandGateway.sendAndWait(new WithdrawMoneyCommand(event.getSourceAccount(), event.getTransferId(), event.getAmount()));
-        } catch(CommandExecutionException e){
+         commandGateway.send(new WithdrawMoneyCommand(event.getSourceAccount(), transferId, event.getAmount()), new CommandCallback<WithdrawMoneyCommand, Object>() {
+             @Override
+             public void onSuccess(CommandMessage<? extends WithdrawMoneyCommand> commandMessage, Object o) {
 
-            if(OverdraftLimitExceededException.class.isInstance(e.getCause())){
+             }
 
-                commandGateway.send(new CancelMoneyTransferCommand(event.getTransferId()));
-            }*/
+             @Override
+             public void onFailure(CommandMessage<? extends WithdrawMoneyCommand> commandMessage, Throwable throwable) {
 
-             commandGateway.send(new WithdrawMoneyCommand(event.getSourceAccount(), transactionId, event.getAmount()), new CommandCallback<WithdrawMoneyCommand, Object>() {
-                 @Override
-                 public void onSuccess(CommandMessage<? extends WithdrawMoneyCommand> commandMessage, Object o) {
-
-                 }
-
-                 @Override
-                 public void onFailure(CommandMessage<? extends WithdrawMoneyCommand> commandMessage, Throwable throwable) {
-
-                     commandGateway.send(new CancelMoneyTransferCommand(event.getTransferId()));
-                 }
-             });
+                 commandGateway.send(new CancelMoneyTransferCommand(event.getTransferId()));
+             }
+         });
 
 
         }
