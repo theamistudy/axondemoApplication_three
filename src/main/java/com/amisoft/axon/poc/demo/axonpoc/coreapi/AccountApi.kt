@@ -2,16 +2,10 @@ package com.amisoft.axon.poc.demo.axonpoc.coreapi
 
 import org.axonframework.commandhandling.TargetAggregateIdentifier
 
-class CreateAccountCommand(@TargetAggregateIdentifier val accountId: String, val overdraftLimit: Int)
-//class WithdrawMoneyCommand(@TargetAggregateIdentifier val accountId: String, val transactionId : String, val amount: Int)
-class WithdrawMoneyCommand(@TargetAggregateIdentifier val accountId: String, val amount: Int)
-class DepositMoneyCommand(@TargetAggregateIdentifier val accountId: String, val transactionId : String, val amount: Int)
+class CreateAccountCommand(val accountId : String, val overdraftLimit : Int);
+class WithdrawMoneyCommand (@TargetAggregateIdentifier val accountId : String, val amount : Int);
 
-class AccountCreatedEvent(val accountId: String, val overdraftLimit: Int)
+class AccountCreatedEvent( val accountId : String, val overdraftLimit : Int);
+class MoneyWithdrawnEvent (val accountId : String, val amount : Int, val balance : Int);
 
-// balance updates
-abstract class BalanceUpdatedEvent(val accountId: String, val balance: Int)
-class MoneyWithdrawnEvent(accountId: String, amount: Int, balance: Int) : BalanceUpdatedEvent(accountId, balance)
-class MoneyDepositedEvent(accountId: String, val transactionId : String, val amount: Int, balance: Int) : BalanceUpdatedEvent(accountId, balance)
-
-class OverdraftLimitExceededException() : Exception()
+class OverdraftLimitExceededException : Exception()

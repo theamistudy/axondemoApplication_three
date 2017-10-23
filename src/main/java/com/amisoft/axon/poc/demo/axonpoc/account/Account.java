@@ -27,6 +27,14 @@ public class Account {
         apply(new AccountCreatedEvent(cmd.getAccountId(), cmd.getOverdraftLimit()));
     }
 
+    @EventSourcingHandler
+    protected void on(AccountCreatedEvent event) {
+        this.accountId = event.getAccountId();
+        this.overdraftLimit = event.getOverdraftLimit();
+    }
+
+
+
     @CommandHandler
     public void handle(WithdrawMoneyCommand cmd) throws OverdraftLimitExceededException {
         if (balance + overdraftLimit < cmd.getAmount()) {
@@ -35,19 +43,11 @@ public class Account {
         apply(new MoneyWithdrawnEvent(accountId, cmd.getAmount(), balance - cmd.getAmount()));
     }
 
-    @CommandHandler
-    public void handle(DepositMoneyCommand cmd) {
-        apply(new MoneyDepositedEvent(accountId, cmd.getTransactionId(), cmd.getAmount(), balance + cmd.getAmount()));
-    }
-
     @EventSourcingHandler
-    protected void on(AccountCreatedEvent event) {
-        this.accountId = event.getAccountId();
-        this.overdraftLimit = event.getOverdraftLimit();
-    }
+    public void on(MoneyWithdrawnEvent event){
 
-    @EventSourcingHandler
-    protected void on(BalanceUpdatedEvent event) {
         this.balance = event.getBalance();
+
     }
+
 }
