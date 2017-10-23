@@ -2,7 +2,7 @@ package com.amisoft.axon.poc.demo.axonpoc.coreapi
 
 import org.axonframework.commandhandling.TargetAggregateIdentifier
 
-class CreateAccountCommand(val accountId : String, val overdraftLimit : Int);
+class CreateAccountCommand(@TargetAggregateIdentifier  val accountId : String, val overdraftLimit : Int);
 class WithdrawMoneyCommand (@TargetAggregateIdentifier val accountId : String, val transactionId : String, val amount : Int);
 class DepositMoneyCommand(@TargetAggregateIdentifier val accountId: String,  val transactionId : String, val amount: Int)
 
