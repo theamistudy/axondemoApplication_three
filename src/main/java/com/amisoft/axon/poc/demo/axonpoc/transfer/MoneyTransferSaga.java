@@ -10,10 +10,13 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.saga.EndSaga;
 import org.axonframework.eventhandling.saga.SagaEventHandler;
 import static org.axonframework.eventhandling.saga.SagaLifecycle.end;
+
+import org.axonframework.eventhandling.saga.SagaLifecycle;
 import org.axonframework.eventhandling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 
 @Saga
@@ -24,6 +27,7 @@ public class MoneyTransferSaga {
     private transient CommandGateway commandGateway;
 
     private String targetAccount;
+    private String transactionId;
     private String transferId;
 
 
@@ -32,6 +36,9 @@ public class MoneyTransferSaga {
     public void on(MoneyTransferRequestedEvent event){
 
         targetAccount = event.getTargetAccount();
+        transactionId = UUID.randomUUID().toString();
+        transferId = event.getTransferId();
+        SagaLifecycle.associateWith("transactionId",transactionId);
 
         // Oneway of handle overdraft limit exceed exception. Just uncomment the below code.
         /*try {
@@ -43,7 +50,7 @@ public class MoneyTransferSaga {
                 commandGateway.send(new CancelMoneyTransferCommand(event.getTransferId()));
             }*/
 
-             commandGateway.send(new WithdrawMoneyCommand(event.getSourceAccount(), event.getTransferId(), event.getAmount()), new CommandCallback<WithdrawMoneyCommand, Object>() {
+             commandGateway.send(new WithdrawMoneyCommand(event.getSourceAccount(), transactionId, event.getAmount()), new CommandCallback<WithdrawMoneyCommand, Object>() {
                  @Override
                  public void onSuccess(CommandMessage<? extends WithdrawMoneyCommand> commandMessage, Object o) {
 
@@ -60,17 +67,19 @@ public class MoneyTransferSaga {
         }
 
 
-    @SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
+   // @SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
+    @SagaEventHandler(associationProperty = "transactionId")
     public void on(MoneyWithdrawnEvent event){
 
          commandGateway.send(new DepositMoneyCommand(targetAccount,event.getTransactionId(),event.getAmount()),LoggingCallback.INSTANCE);
     }
 
 
-    @SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
+    //@SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
+    @SagaEventHandler(associationProperty = "transactionId")
     public void on (MoneyDepositedEvent event){
 
-        commandGateway.send(new CompleteMoneyTransferCommand(event.getTransactionId()),LoggingCallback.INSTANCE);
+        commandGateway.send(new CompleteMoneyTransferCommand(transferId),LoggingCallback.INSTANCE);
     }
 
 
