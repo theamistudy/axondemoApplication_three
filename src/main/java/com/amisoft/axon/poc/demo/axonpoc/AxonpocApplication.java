@@ -14,7 +14,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 
-@EntityScan(basePackageClasses = DomainEventEntry.class)
+//@EntityScan(basePackageClasses = DomainEventEntry.class)
 @EnableAxon
 @SpringBootApplication
 public class AxonpocApplication {
