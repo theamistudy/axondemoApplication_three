@@ -2,6 +2,7 @@ package com.amisoft.axon.poc.demo.axonpoc.transfer;
 
 
 import com.amisoft.axon.poc.demo.axonpoc.coreapi.*;
+import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.saga.EndSaga;
 import org.axonframework.eventhandling.saga.SagaEventHandler;
@@ -28,20 +29,20 @@ public class MoneyTransferSaga {
     public void on(MoneyTransferRequestedEvent event){
 
         targetAccount = event.getTargetAccount();
-        commandGateway.send(new WithdrawMoneyCommand(event.getSourceAccount(),event.getTransferId(),event.getAmount()));
+        commandGateway.send(new WithdrawMoneyCommand(event.getSourceAccount(),event.getTransferId(),event.getAmount()), LoggingCallback.INSTANCE);
     }
 
     @SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
     public void on(MoneyWithdrawnEvent event){
 
-         commandGateway.send(new DepositMoneyCommand(targetAccount,event.getTransactionId(),event.getAmount()));
+         commandGateway.send(new DepositMoneyCommand(targetAccount,event.getTransactionId(),event.getAmount()),LoggingCallback.INSTANCE);
     }
 
 
     @SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
     public void on (MoneyDepositedEvent event){
 
-        commandGateway.send(new CompleteMoneyTransferCommand(event.getTransactionId()));
+        commandGateway.send(new CompleteMoneyTransferCommand(event.getTransactionId()),LoggingCallback.INSTANCE);
     }
 
     @EndSaga

@@ -9,6 +9,6 @@ public class LoggingEventHandler {
 
     @EventHandler
     public void on(Object event) {
-        System.out.println("Event received: " + event.toString());
+        System.out.println("****Event received: " + event.toString());
     }
 }
