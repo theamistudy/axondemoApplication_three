@@ -1,12 +1,11 @@
 package com.amisoft.axon.poc.demo.axonpoc.transfer;
 
 
-import com.amisoft.axon.poc.demo.axonpoc.coreapi.DepositMoneyCommand;
-import com.amisoft.axon.poc.demo.axonpoc.coreapi.MoneyTransferRequestedEvent;
-import com.amisoft.axon.poc.demo.axonpoc.coreapi.MoneyWithdrawnEvent;
-import com.amisoft.axon.poc.demo.axonpoc.coreapi.WithdrawMoneyCommand;
+import com.amisoft.axon.poc.demo.axonpoc.coreapi.*;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.eventhandling.saga.EndSaga;
 import org.axonframework.eventhandling.saga.SagaEventHandler;
+import org.axonframework.eventhandling.saga.SagaLifecycle;
 import org.axonframework.eventhandling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 
@@ -36,6 +35,18 @@ public class MoneyTransferSaga {
     public void on(MoneyWithdrawnEvent event){
 
          commandGateway.send(new DepositMoneyCommand(targetAccount,event.getTransactionId(),event.getAmount()));
+    }
+
+
+    @SagaEventHandler(associationProperty = "transactionId", keyName="transferId")
+    public void on (MoneyDepositedEvent event){
+
+        commandGateway.send(new CompleteMoneyTransferCommand(event.getTransactionId()));
+    }
+
+    @EndSaga
+    @SagaEventHandler(associationProperty = "transferId")
+    public void on(MoneyTransferCompletedEvent event){
 
     }
 
