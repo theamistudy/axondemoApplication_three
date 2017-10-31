@@ -3,19 +3,24 @@ package com.amisoft.axon.poc.demo.axonpoc;
 
 import com.amisoft.axon.poc.demo.axonpoc.coreapi.CreateAccountCommand;
 import com.amisoft.axon.poc.demo.axonpoc.coreapi.RequestMoneyTransferCommand;
+import com.amisoft.axon.poc.demo.axonpoc.query.AccountBalance;
+import com.amisoft.axon.poc.demo.axonpoc.query.AccountBalanceEventHandler;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@RequestMapping("/bank")
 public class TransferController {
 
     @Autowired
     CommandGateway commandGateway;
 
-    @RequestMapping("/")
+    @Autowired
+    AccountBalanceEventHandler accountBalanceEventHandler;
+
+    @RequestMapping("/transfer")
     @ResponseBody
     public String sendMessage(){
 
@@ -23,8 +28,14 @@ public class TransferController {
         commandGateway.send(new CreateAccountCommand("4321",1000, LoggingCallback.INSTANCE));
         commandGateway.send(new RequestMoneyTransferCommand("tf1","1234","4321",1000,LoggingCallback.INSTANCE));
 
-        return "OK";
+        return "Money transfer successful";
 
+    }
+
+    @GetMapping(value = "/balance/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AccountBalance getBalance(@PathVariable String id){
+        AccountBalance balance =  accountBalanceEventHandler.getBalance(id);
+        return balance;
     }
 
 
