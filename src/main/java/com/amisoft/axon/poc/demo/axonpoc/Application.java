@@ -31,10 +31,10 @@ public class Application {
 
         CommandGateway commandGateway = configuration.commandGateway();
 
-        commandGateway.send(new CreateAccountCommand("1234", 1000), LoggingCallback.INSTANCE);
-        commandGateway.send(new CreateAccountCommand("4321", 1000), LoggingCallback.INSTANCE);
+        commandGateway.send(new CreateAccountCommand("1234", 1000, LoggingCallback.INSTANCE));
+        commandGateway.send(new CreateAccountCommand("4321", 1000, LoggingCallback.INSTANCE));
         //commandGateway.send(new RequestMoneyTransferCommand("tf1", "1234", "4321", 100000), LoggingCallback.INSTANCE);
-        commandGateway.send(new RequestMoneyTransferCommand("tf1", "1234", "4321", 100), LoggingCallback.INSTANCE);
+        commandGateway.send(new RequestMoneyTransferCommand("tf1", "1234", "4321", 100,LoggingCallback.INSTANCE));
 
         configuration.shutdown();
     }
