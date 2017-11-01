@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/bank")
@@ -56,6 +57,14 @@ public class TransferController {
 
 
 
+    @RequestMapping("/transfer/{sourceAccount}/{destinationAccount}/{amount}")
+    @ResponseBody
+    public String transfer(@PathVariable String sourceAccount,@PathVariable String destinationAccount,@PathVariable int amount){
 
+        String transactionID = UUID.randomUUID().toString();
+        commandGateway.send(new RequestMoneyTransferCommand(transactionID,sourceAccount,destinationAccount,amount,LoggingCallback.INSTANCE));
+        return "Money transfered successfully, Transaction reference is : "+transactionID;
+
+    }
 
 }
