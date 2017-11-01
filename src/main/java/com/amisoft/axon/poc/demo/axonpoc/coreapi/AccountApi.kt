@@ -1,8 +1,9 @@
 package com.amisoft.axon.poc.demo.axonpoc.coreapi
 
+import com.amisoft.axon.poc.demo.axonpoc.LoggingCallback
 import org.axonframework.commandhandling.TargetAggregateIdentifier
 
-class CreateAccountCommand(@TargetAggregateIdentifier  val accountId : String, val overdraftLimit : Int);
+class CreateAccountCommand(@TargetAggregateIdentifier val accountId: String, val overdraftLimit: Int, val instance: LoggingCallback<Any, Any>);
 class WithdrawMoneyCommand (@TargetAggregateIdentifier val accountId : String, val transactionId : String, val amount : Int);
 class DepositMoneyCommand(@TargetAggregateIdentifier val accountId: String,  val transactionId : String, val amount: Int)
 

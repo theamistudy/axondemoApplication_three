@@ -1,5 +1,6 @@
 package com.amisoft.axon.poc.demo.axonpoc.account;
 
+import com.amisoft.axon.poc.demo.axonpoc.LoggingCallback;
 import com.amisoft.axon.poc.demo.axonpoc.coreapi.*;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -18,7 +19,7 @@ public class AccountTest {
     @Test
     public void testAccountCreated() throws Exception {
         fixture.givenNoPriorActivity()
-                .when(new CreateAccountCommand("1234", 1000))
+                .when(new CreateAccountCommand("1234", 1000, LoggingCallback.INSTANCE))
                 .expectEvents(new AccountCreatedEvent("1234", 1000));
     }
 
