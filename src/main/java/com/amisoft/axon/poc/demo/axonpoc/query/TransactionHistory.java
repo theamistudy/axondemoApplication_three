@@ -14,14 +14,16 @@ public class TransactionHistory {
     private Long id;
 
     private String accountId;
+    private String transactionId;
     private int amount;
 
 
     public TransactionHistory() {
     }
 
-    public TransactionHistory(String accountId, int amount) {
+    public TransactionHistory(String accountId, String transactionId, int amount) {
         this.accountId = accountId;
+        this.transactionId = transactionId;
         this.amount = amount;
     }
 
@@ -36,6 +38,14 @@ public class TransactionHistory {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public String getAccountId() {

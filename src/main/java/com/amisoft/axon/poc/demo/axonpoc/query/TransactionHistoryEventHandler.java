@@ -24,7 +24,7 @@ public class TransactionHistoryEventHandler {
     @EventHandler
     public void on(MoneyDepositedEvent event){
 
-        entityManager.persist(new TransactionHistory(event.getAccountId(),event.getAmount()));
+        entityManager.persist(new TransactionHistory(event.getAccountId(),event.getTransactionId(),event.getAmount()));
 
     }
 
@@ -32,7 +32,7 @@ public class TransactionHistoryEventHandler {
     @EventHandler
     public void on(MoneyWithdrawnEvent event){
 
-        entityManager.persist(new TransactionHistory(event.getAccountId() , -event.getAmount()));
+        entityManager.persist(new TransactionHistory(event.getAccountId() ,event.getTransactionId(), - event.getAmount()));
 
     }
 
